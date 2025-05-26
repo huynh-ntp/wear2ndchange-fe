@@ -11,6 +11,7 @@ const HomePage = () => {
         width: "100%",
         display: "flex",
         flexDirection: "column",
+        scrollbarWidth: "none", // Ẩn thanh cuộn trên Firefox
       }}
     >
       <Header />

@@ -23,10 +23,11 @@ const LoginPage = () => {
     <Box
       sx={{
         minHeight: "100vh",
-        width: "100vw",
+        width: "100%",
         overflowX: "hidden",
         display: "flex",
         flexDirection: "column",
+        scrollbarWidth: "none",
       }}
     >
       <Header />

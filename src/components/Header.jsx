@@ -6,17 +6,21 @@ import {
   Box,
   Link as MuiLink,
 } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 
 const Header = () => {
+  const navigate = useNavigate(); // Initialize navigate
+
+  const handleNavigation = (path) => {
+    navigate(path); // Navigate to the specified path
+  };
+
   return (
     <Box
       sx={{
-        width: "100vw",
+        width: "100%",
         position: "relative",
-        left: "50%",
-        right: "50%",
-        marginLeft: "-50vw",
-        marginRight: "-50vw",
+        overflow: "hidden",
       }}
     >
       <AppBar
@@ -25,6 +29,7 @@ const Header = () => {
           backgroundColor: "#4a3a2a",
           color: "#f0f0d6",
           boxShadow: "none",
+          width: "100%",
         }}
       >
         <Toolbar
@@ -36,8 +41,8 @@ const Header = () => {
             px: { xs: 2, md: 6 },
             py: 1.5,
             fontSize: { xs: "0.875rem", md: "1rem" },
-            flexDirection: { xs: "column", md: "row" }, // Thêm dòng này để responsive
-            alignItems: { xs: "flex-start", md: "center" }, // Đảm bảo căn chỉnh tốt trên mobile
+            flexDirection: { xs: "column", md: "row" },
+            alignItems: { xs: "flex-start", md: "center" },
           }}
         >
           <Typography
@@ -47,7 +52,7 @@ const Header = () => {
               fontStyle: "italic",
               fontSize: { xs: "1.125rem", md: "1.25rem" },
               userSelect: "none",
-              mb: { xs: 1, md: 0 }, // Thêm margin dưới cho mobile
+              mb: { xs: 1, md: 0 },
             }}
           >
             Chào bạn xinh, sắm đồ xịn nhé!
@@ -55,7 +60,7 @@ const Header = () => {
 
           <Box
             sx={{
-              display: { xs: "flex", md: "flex" }, // Luôn hiển thị, đổi layout theo màn hình
+              display: { xs: "flex", md: "flex" },
               flexDirection: { xs: "column", md: "row" },
               gap: { xs: 1, md: 3 },
               fontFamily: "'Roboto Slab', serif",
@@ -64,14 +69,14 @@ const Header = () => {
             }}
           >
             {[
-              "Trang chủ",
-              "Cửa hàng",
-              "Đăng nhập/Đăng ký",
-              "Kênh người bán",
+              { label: "Trang chủ", path: "/" },
+              { label: "Cửa hàng", path: "/shop" },
+              { label: "Đăng nhập/Đăng ký", path: "/login" },
+              { label: "Kênh người bán", path: "/seller" },
             ].map((item, index) => (
               <MuiLink
                 key={index}
-                href="#"
+                onClick={() => handleNavigation(item.path)} // Handle click for navigation
                 underline="hover"
                 color="inherit"
                 sx={{
@@ -80,7 +85,7 @@ const Header = () => {
                   py: { xs: 0.5, md: 0 },
                 }}
               >
-                {item}
+                {item.label}
               </MuiLink>
             ))}
           </Box>
