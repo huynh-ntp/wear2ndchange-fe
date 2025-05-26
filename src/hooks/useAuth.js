@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { authService } from '@services/api';
+import { useState, useEffect, useCallback } from "react";
+import { authService, userService } from "../services/api";
 
 const useAuth = () => {
   const [user, setUser] = useState(null);
@@ -11,13 +11,20 @@ const useAuth = () => {
       setLoading(true);
       setError(null);
       const response = await authService.login(credentials);
-      const { user: userData, token } = response.data;
-      localStorage.setItem('token', token);
-      setUser(userData);
-      return userData;
+      const { token, username, role } = response.data;
+      localStorage.setItem("token", token);
+      setUser({ username, role });
+      return response.data;
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
-      throw err;
+      console.error("Login error in useAuth:", err);
+      // Always throw an error with a message
+      if (err.response?.data?.message) {
+        throw new Error(err.response.data.message);
+      } else if (err.message) {
+        throw new Error(err.message);
+      } else {
+        throw new Error("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
+      }
     } finally {
       setLoading(false);
     }
@@ -26,9 +33,14 @@ const useAuth = () => {
   const logout = useCallback(async () => {
     try {
       await authService.logout();
+      localStorage.removeItem("token");
       setUser(null);
     } catch (err) {
-      setError(err.response?.data?.message || 'Logout failed');
+      console.error("Logout error:", err);
+      // Even if the logout API fails, we should still clear the local state
+      localStorage.removeItem("token");
+      setUser(null);
+      setError(err.response?.data?.message || "Logout failed");
     }
   }, []);
 
@@ -36,14 +48,28 @@ const useAuth = () => {
     try {
       setLoading(true);
       setError(null);
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) {
         setUser(null);
         return;
       }
-      // Add logic to verify token and get user data
+
+      // Get user profile to verify token and get user data
+      const { data } = await userService.getProfile();
+      if (data) {
+        const { username, role } = data;
+        setUser({ username, role });
+      } else {
+        setUser(null);
+      }
     } catch (err) {
-      setError(err.response?.data?.message || 'Authentication check failed');
+      console.error("Auth check error:", err);
+      if (err.response?.status === 401) {
+        // Token is invalid or expired
+        localStorage.removeItem("token");
+        setUser(null);
+      }
+      setError(err.response?.data?.message || "Authentication check failed");
     } finally {
       setLoading(false);
     }

@@ -1,28 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   AppBar,
   Toolbar,
   Typography,
   Box,
   Link as MuiLink,
+  CircularProgress,
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../contexts/AuthContext";
 
 const Header = () => {
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
+  const { user, logout } = useAuthContext();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleNavigation = (path) => {
-    navigate(path); // Navigate to the specified path
+    navigate(path);
+  };
+
+  const handleAuthAction = async () => {
+    if (user) {
+      try {
+        setIsLoading(true);
+        await logout();
+        navigate("/login");
+      } catch (error) {
+        console.error("Logout failed:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      navigate("/login");
+    }
   };
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
+    <Box sx={{ width: "100%", position: "relative", overflow: "hidden" }}>
       <AppBar
         position="static"
         sx={{
@@ -55,7 +69,9 @@ const Header = () => {
               mb: { xs: 1, md: 0 },
             }}
           >
-            Chào bạn xinh, sắm đồ xịn nhé!
+            {user
+              ? `Xin chào, ${user.username}!`
+              : "Chào bạn xinh, sắm đồ xịn nhé!"}
           </Typography>
 
           <Box
@@ -71,12 +87,11 @@ const Header = () => {
             {[
               { label: "Trang chủ", path: "/" },
               { label: "Cửa hàng", path: "/shop" },
-              { label: "Đăng nhập/Đăng ký", path: "/login" },
               { label: "Kênh người bán", path: "/seller" },
             ].map((item, index) => (
               <MuiLink
                 key={index}
-                onClick={() => handleNavigation(item.path)} // Handle click for navigation
+                onClick={() => handleNavigation(item.path)}
                 underline="hover"
                 color="inherit"
                 sx={{
@@ -88,6 +103,28 @@ const Header = () => {
                 {item.label}
               </MuiLink>
             ))}
+
+            <MuiLink
+              onClick={handleAuthAction}
+              underline="hover"
+              color="inherit"
+              sx={{
+                cursor: "pointer",
+                width: { xs: "100%", md: "auto" },
+                py: { xs: 0.5, md: 0 },
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              {isLoading ? (
+                <CircularProgress size={16} color="inherit" />
+              ) : user ? (
+                "Đăng xuất"
+              ) : (
+                "Đăng nhập/Đăng ký"
+              )}
+            </MuiLink>
           </Box>
         </Toolbar>
       </AppBar>
