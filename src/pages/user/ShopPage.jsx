@@ -12,14 +12,10 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
 
 const ShopPage = () => {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <Header />
-
       <Box sx={{ flex: 1, maxWidth: "100%", px: 2, py: 3, bgcolor: "#fff" }}>
         <Box sx={{ maxWidth: "1000px", mx: "auto", mb: 4 }}>
           {/* Search section */}
@@ -241,8 +237,6 @@ const ShopPage = () => {
           </Grid>
         </Box>
       </Box>
-
-      <Footer />
     </Box>
   );
 };

@@ -46,17 +46,19 @@ const Header = () => {
           width: "100%",
         }}
       >
+        {" "}
         <Toolbar
           sx={{
-            maxWidth: "1280px",
+            maxWidth: "lg",
             mx: "auto",
             width: "100%",
             justifyContent: "space-between",
-            px: { xs: 2, md: 6 },
+            px: { xs: 2, md: 4 },
             py: 1.5,
             fontSize: { xs: "0.875rem", md: "1rem" },
             flexDirection: { xs: "column", md: "row" },
             alignItems: { xs: "flex-start", md: "center" },
+            overflow: "hidden",
           }}
         >
           <Typography

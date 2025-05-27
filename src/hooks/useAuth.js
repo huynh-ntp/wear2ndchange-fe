@@ -29,17 +29,16 @@ const useAuth = () => {
       setLoading(false);
     }
   }, []);
-
   const logout = useCallback(async () => {
     try {
-      await authService.logout();
+      // Always clear local storage and state first
       localStorage.removeItem("token");
       setUser(null);
+      // Then try to call the logout API
+      await authService.logout();
     } catch (err) {
       console.error("Logout error:", err);
-      // Even if the logout API fails, we should still clear the local state
-      localStorage.removeItem("token");
-      setUser(null);
+      // Error from the API doesn't matter as we've already cleared local state
       setError(err.response?.data?.message || "Logout failed");
     }
   }, []);
@@ -49,27 +48,21 @@ const useAuth = () => {
       setLoading(true);
       setError(null);
       const token = localStorage.getItem("token");
+
       if (!token) {
         setUser(null);
-        return;
+        return false;
       }
 
-      // Get user profile to verify token and get user data
-      const { data } = await userService.getProfile();
-      if (data) {
-        const { username, role } = data;
-        setUser({ username, role });
-      } else {
-        setUser(null);
-      }
+      const response = await authService.checkAuth();
+      const { username, role } = response.data;
+      setUser({ username, role });
+      return true;
     } catch (err) {
       console.error("Auth check error:", err);
-      if (err.response?.status === 401) {
-        // Token is invalid or expired
-        localStorage.removeItem("token");
-        setUser(null);
-      }
-      setError(err.response?.data?.message || "Authentication check failed");
+      localStorage.removeItem("token");
+      setUser(null);
+      return false;
     } finally {
       setLoading(false);
     }

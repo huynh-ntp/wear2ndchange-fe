@@ -1,6 +1,6 @@
 import React from "react";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 import { Box, Button, Container, Grid, Typography } from "@mui/material";
 
 const HomePage = () => {
@@ -12,19 +12,19 @@ const HomePage = () => {
         display: "flex",
         flexDirection: "column",
         scrollbarWidth: "none", // Ẩn thanh cuộn trên Firefox
+        overflow: "hidden", // Ngăn chặn scroll ngang
       }}
     >
-      <Header />
-
       <Box
         component="section"
         sx={{
           backgroundColor: "#f4e3b8",
-          px: { xs: 2, sm: 4, md: 6, lg: 8 }, // Giảm padding ngang
+          px: { xs: 2, sm: 3, md: 4 }, // Giảm padding ngang
           py: { xs: 3, sm: 4 }, // Giảm padding dọc
           flex: 1,
           display: "flex",
           alignItems: "center", // Căn giữa theo chiều dọc
+          overflow: "hidden", // Ngăn chặn scroll ngang
         }}
       >
         <Container maxWidth="lg">
@@ -32,8 +32,10 @@ const HomePage = () => {
             sx={{
               display: "flex",
               flexDirection: { xs: "column", md: "row" },
-              gap: { xs: 4, md: 8 }, // Giảm khoảng cách giữa các phần tử
+              gap: { xs: 3, md: 6 }, // Giảm khoảng cách giữa các phần tử
               alignItems: "center",
+              maxWidth: "100%",
+              overflow: "hidden",
             }}
           >
             {/* Left content */}
@@ -94,7 +96,8 @@ const HomePage = () => {
               flex={1}
               sx={{
                 width: "100%",
-                maxWidth: 1000, // Tăng kích thước tối đa của ảnh
+                maxWidth: { xs: "100%", md: "600px" }, // Điều chỉnh kích thước tối đa của ảnh
+                overflow: "hidden",
               }}
             >
               <Box
@@ -113,8 +116,6 @@ const HomePage = () => {
           </Box>
         </Container>
       </Box>
-
-      <Footer />
     </Box>
   );
 };

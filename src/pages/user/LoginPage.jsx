@@ -12,10 +12,8 @@ import {
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import GoogleIcon from "@mui/icons-material/Google";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import { useAuthContext } from "../contexts/AuthContext";
-import { authService } from "../services/api";
+import { useAuthContext } from "../../contexts/AuthContext";
+import { authService } from "../../services/api";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -173,7 +171,6 @@ const LoginPage = () => {
         scrollbarWidth: "none",
       }}
     >
-      <Header />
       <Box
         sx={{
           flex: 1,
@@ -513,7 +510,6 @@ const LoginPage = () => {
           </Box>
         </Box>
       </Box>
-      <Footer />
     </Box>
   );
 };

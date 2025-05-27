@@ -12,10 +12,11 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { authService } from "../services/api";
+import { useAuthContext } from "../../contexts/AuthContext";
 
 const AdminLoginPage = () => {
   const navigate = useNavigate();
+  const { login } = useAuthContext();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -43,21 +44,21 @@ const AdminLoginPage = () => {
 
     try {
       setLoading(true);
-      const response = await authService.login(formData);
+      const response = await login(formData);
 
       // Kiểm tra role từ response
-      if (response.data.role !== "ADMIN") {
+      if (response.role !== "ADMIN") {
         setError("Bạn không có quyền truy cập vào trang quản trị");
+        localStorage.removeItem("token");
         return;
       }
 
-      // Nếu là admin thì lưu token và điều hướng
-      localStorage.setItem("adminToken", response.data.token);
+      // Nếu là admin thì điều hướng
       navigate("/admin/dashboard");
     } catch (err) {
       console.error("Admin login error:", err);
       setError(
-        err.response?.data?.message ||
+        err.message ||
           "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập."
       );
     } finally {

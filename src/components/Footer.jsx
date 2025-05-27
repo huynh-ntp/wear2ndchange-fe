@@ -20,15 +20,12 @@ const Footer = () => {
         borderTop: "1px solid #d9d9b9",
         color: "#1a1a1a",
         fontSize: { xs: "0.75rem", md: "0.875rem" },
-        width: "100vw", // Đảm bảo full chiều ngang
-        position: "relative", // Đảm bảo không bị tràn ngang khi scroll
-        left: "50%",
-        right: "50%",
-        marginLeft: "-50vw",
-        marginRight: "-50vw",
+        width: "100%",
+        position: "relative",
+        overflow: "hidden",
       }}
     >
-      <Container maxWidth="xl" sx={{ py: 6 }}>
+      <Container maxWidth="lg" sx={{ py: 6, px: { xs: 2, md: 3 } }}>
         <Grid container spacing={4} fontFamily="'Roboto Slab', serif">
           {/* Cột 1 */}
           <Grid item xs={12} md={3}>
