@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
 import AuthProvider from "./contexts/AuthContext";
@@ -31,7 +36,8 @@ function App() {
       <AuthProvider>
         <Router>
           <Routes>
-            {/* Admin Routes */}            <Route path="/admin/login" element={<AdminLoginPage />} />
+            {/* Admin Routes */}{" "}
+            <Route path="/admin/login" element={<AdminLoginPage />} />
             <Route
               path="/admin/*"
               element={

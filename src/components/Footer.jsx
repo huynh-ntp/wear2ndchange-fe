@@ -33,8 +33,10 @@ const Footer = () => {
               Wear.2ndChance
             </Typography>
             <Typography sx={{ color: "#4a4a4a", lineHeight: 1.7 }}>
-              Nền tảng mua bán quần áo secondhand tiện lợi, giúp bạn tiết kiệm
-              chi phí và bảo vệ môi trường.
+              Nền tảng mua bán quần áo secondhand tiện lợi,
+            </Typography>
+            <Typography sx={{ color: "#4a4a4a", lineHeight: 1.7 }}>
+              tiết kiệm và bảo vệ môi trường.
             </Typography>
           </Grid>
 

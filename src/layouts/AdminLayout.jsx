@@ -29,6 +29,13 @@ const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Redirect to dashboard if at /admin
+  React.useEffect(() => {
+    if (location.pathname === "/admin") {
+      navigate("/admin/dashboard", { replace: true });
+    }
+  }, [location.pathname, navigate]);
+
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
       {/* Sidebar */}
