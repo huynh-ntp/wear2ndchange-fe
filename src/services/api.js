@@ -3,11 +3,24 @@ import axios from "axios";
 const API_BASE_URL =
   process.env.REACT_APP_API_BASE_URL || "http://localhost:8080/api";
 
+// Create axios instance with mixed content handling
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
+  // Prevent mixed content warnings and handle HTTP in production
+  transformRequest: [
+    (data, headers) => {
+      // Log request details in development
+      if (process.env.NODE_ENV === "development") {
+        console.log("API Request:", { url: API_BASE_URL, headers, data });
+      }
+      return JSON.stringify(data);
+    },
+  ],
+  // Additional security headers
+  withCredentials: true,
 });
 
 // Request interceptor
@@ -22,11 +35,36 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor
+// Response interceptor with enhanced error handling
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Ensure we don't redirect on login page failures
+    // Check for network errors and mixed content
+    if (error.message === "Network Error") {
+      console.error("Network Error Details:", {
+        url: error.config?.url,
+        method: error.config?.method,
+        baseURL: error.config?.baseURL,
+        protocol: window.location.protocol,
+        host: window.location.host,
+      });
+
+      // Check if this might be a mixed content issue
+      if (
+        window.location.protocol === "https:" &&
+        API_BASE_URL.startsWith("http:")
+      ) {
+        console.error("Possible mixed content issue - attempting to use HTTPS");
+        // Retry the request with HTTPS
+        error.config.baseURL = API_BASE_URL.replace("http:", "https:");
+        return api(error.config);
+      }
+
+      // You might want to show a user-friendly message here
+      // or handle the error in a specific way
+    }
+
+    // Handle authentication errors
     if (
       error.response?.status === 401 &&
       !error.config.url.includes("/auth/login")
@@ -36,6 +74,18 @@ api.interceptors.response.use(
         window.location.href = "/login";
       }
     }
+
+    // Add retry logic for certain errors
+    if (error.response?.status === 0 || error.response?.status === 502) {
+      const retryCount = error.config?.retryCount || 0;
+      if (retryCount < 3) {
+        error.config.retryCount = retryCount + 1;
+        return new Promise((resolve) => setTimeout(resolve, 1000)).then(() =>
+          api(error.config)
+        );
+      }
+    }
+
     return Promise.reject(error);
   }
 );
