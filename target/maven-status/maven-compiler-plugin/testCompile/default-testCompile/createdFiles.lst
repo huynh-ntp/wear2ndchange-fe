@@ -1,0 +1,7 @@
+com\server\ShareDoo\controller\ProductControllerTest.class
+com\server\ShareDoo\controller\UserControllerTest.class
+com\server\ShareDoo\controller\ProductRecommendationControllerTest.class
+com\server\ShareDoo\ShareDooApplicationTests.class
+com\server\ShareDoo\controller\AuthControllerTest.class
+com\server\ShareDoo\controller\RentalControllerTest.class
+com\server\ShareDoo\controller\PaymentControllerTest.class
