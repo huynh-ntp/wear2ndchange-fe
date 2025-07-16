@@ -9,9 +9,7 @@ import {
   Button,
   CircularProgress,
   Alert,
-  Divider,
   Card,
-  CardMedia,
   CardContent,
   Dialog,
   DialogTitle,
@@ -113,6 +111,20 @@ const AdminOrderDetail = () => {
     }
   };
 
+  // Accept paid order
+  const handleApprovePaidOrder = async () => {
+    try {
+      setLoading(true);
+      await adminService.updateOrderStatus(orderId, "PAID_AND_ON_DELIVERING");
+      fetchOrderDetails();
+    } catch (error) {
+      console.error("Error approving order:", error);
+      setError("Không thể xác nhận đơn hàng");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleCancelOrder = async () => {
     try {
       setLoading(true);
@@ -190,6 +202,16 @@ const AdminOrderDetail = () => {
                 Hủy đơn hàng
               </Button>
             </>
+          )}
+
+          {order.status === "PAID" && (
+            <Button
+              size="small"
+              variant="contained"
+              onClick={() => handleApprovePaidOrder(order.id)}
+            >
+              Giao hàng
+            </Button>
           )}
         </Box>
       </Box>
