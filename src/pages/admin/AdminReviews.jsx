@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect} from "react";
 import {
   Box,
   Typography,
@@ -58,10 +58,10 @@ const AdminReviews = () => {
         search: searchTerm,
       });
 
-      if (response.data) {
-        setReviews(response.data.content);
-        setTotalPages(response.data.totalPages);
-        setTotalElements(response.data.totalElements);
+      if (response) {
+        setReviews(response.content);
+        setTotalPages(response.totalPages);
+        setTotalElements(response.totalElements);
       }
     } catch (error) {
       console.error("Error fetching reviews:", error);
@@ -188,8 +188,8 @@ const AdminReviews = () => {
                   <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                     <Box
                       component="img"
-                      src={getImageUrl(review.product?.images?.[0]?.url)}
-                      alt={review.product?.name}
+                      src={getImageUrl(review.productImageUrl)}
+                      alt={review.productName}
                       sx={{
                         width: 50,
                         height: 50,
@@ -200,7 +200,7 @@ const AdminReviews = () => {
                     />
                     <Box>
                       <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                        {review.product?.name}
+                        {review.productName}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
                         {review.product?.category}
@@ -219,10 +219,10 @@ const AdminReviews = () => {
                         fontSize: "0.875rem",
                       }}
                     >
-                      {review.user?.username?.charAt(0).toUpperCase() || "U"}
+                      {review.accountName?.charAt(0).toUpperCase() || "U"}
                     </Avatar>
                     <Typography variant="body2">
-                      {review.user?.username || "Người dùng"}
+                      {review.accountName || "Người dùng"}
                     </Typography>
                   </Box>
                 </TableCell>
@@ -331,8 +331,8 @@ const AdminReviews = () => {
                 <Grid item xs={12} md={4}>
                   <Box
                     component="img"
-                    src={getImageUrl(selectedReview.product?.images?.[0]?.url)}
-                    alt={selectedReview.product?.name}
+                    src={getImageUrl(selectedReview.productImageUrl)}
+                    alt={selectedReview.productName}
                     sx={{
                       width: "100%",
                       height: 200,
@@ -344,7 +344,7 @@ const AdminReviews = () => {
                 </Grid>
                 <Grid item xs={12} md={8}>
                   <Typography variant="h6" gutterBottom>
-                    {selectedReview.product?.name}
+                    {selectedReview.productName}
                   </Typography>
                   <Typography
                     variant="body2"
@@ -386,11 +386,11 @@ const AdminReviews = () => {
                         color: "#4a3a2a",
                       }}
                     >
-                      {selectedReview.user?.username?.charAt(0).toUpperCase() ||
+                      {selectedReview.accountName?.charAt(0).toUpperCase() ||
                         "U"}
                     </Avatar>
                     <Typography variant="body2">
-                      {selectedReview.user?.username || "Người dùng"}
+                      {selectedReview.accountName || "Người dùng"}
                     </Typography>
                   </Box>
 
