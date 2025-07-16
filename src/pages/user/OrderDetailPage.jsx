@@ -6,7 +6,6 @@ import {
   Paper,
   CircularProgress,
   Alert,
-  Grid,
   Avatar,
   Divider,
   Chip,
@@ -31,6 +30,7 @@ const OrderDetailPage = () => {
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [reviewedProducts, setReviewedProducts] = useState(new Set());
+  const [confirmingDelivery, setConfirmingDelivery] = useState(false);
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -39,11 +39,11 @@ const OrderDetailPage = () => {
         const response = await userService.getOrderDetails(id);
         const orderData = response.data;
         setOrderDetails(orderData);
-        
+
         // Check which products have been reviewed if order is received
         if (orderData.status === "RECEIVED" && orderData.items) {
           const reviewedProductIds = new Set();
-          
+
           // Check each product for existing reviews
           for (const item of orderData.items) {
             try {
@@ -55,7 +55,7 @@ const OrderDetailPage = () => {
               console.error(`Error checking review for product ${item.product.id}:`, error);
             }
           }
-          
+
           setReviewedProducts(reviewedProductIds);
         }
       } catch (error) {
@@ -119,6 +119,10 @@ const OrderDetailPage = () => {
         return "Đã nhận hàng";
       case "CANCEL":
         return "Đã hủy";
+      case "PAID":
+        return "Đã thanh toán";
+      case "PAID_AND_ON_DELIVERING":
+        return "Đang giao hàng";
       default:
         return status;
     }
@@ -156,10 +160,28 @@ const OrderDetailPage = () => {
     if (selectedProduct) {
       setReviewedProducts(prev => new Set([...prev, selectedProduct.id]));
     }
-    
+
     // Close the modal
     setReviewModalOpen(false);
     setSelectedProduct(null);
+  };
+
+  const handleConfirmDelivery = async () => {
+    if (!orderDetails) return;
+
+    try {
+      setConfirmingDelivery(true);
+      await userService.updateOrderStatus(orderDetails.id, "RECEIVED");
+
+      // Refresh order details to show the new status
+      const response = await userService.getOrderDetails(orderDetails.id);
+      setOrderDetails(response.data);
+    } catch (error) {
+      console.error("Error confirming delivery:", error);
+      setError("Không thể xác nhận đã nhận hàng.");
+    } finally {
+      setConfirmingDelivery(false);
+    }
   };
 
   if (loading) {
@@ -345,6 +367,22 @@ const OrderDetailPage = () => {
             disabled={cancellingOrder}
           >
             {cancellingOrder ? <CircularProgress size={24} /> : "Hủy đơn hàng"}
+          </Button>
+        </Box>
+      )}
+      {(orderDetails.status === "DELIVERING" || orderDetails.status === "PAID_AND_ON_DELIVERING") && (
+        <Box sx={{ mt: 3, display: "flex", justifyContent: "center" }}>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={handleConfirmDelivery}
+            disabled={confirmingDelivery}
+          >
+            {confirmingDelivery ? (
+              <CircularProgress size={24} />
+            ) : (
+              "Đã nhận được hàng"
+            )}
           </Button>
         </Box>
       )}
